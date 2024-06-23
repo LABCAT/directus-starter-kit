@@ -1,0 +1,20 @@
+version: "3"
+services:
+  directus:
+    build:
+      context: ./
+    container_name: directus-cms
+    # Required when running on platform other than amd64, like Apple M1/M2:
+    # platform: linux/amd64
+    ports:
+      - 8055:8055
+    volumes:
+      - ./extensions:/directus/extensions
+      - ./templates:/directus/templates
+      - ./snapshot:/directus/snapshot
+    env_file:
+      - .env
+    environment:
+      # Default Admin
+      ADMIN_EMAIL: "hello@example.com"
+      ADMIN_PASSWORD: "password"
