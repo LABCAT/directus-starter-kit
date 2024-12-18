@@ -1,8 +1,7 @@
-FROM directus/directus:10.12.1
+FROM directus/directus:11.3.5
 
 USER root
-RUN corepack enable \
-    && corepack prepare pnpm@9.4.0 --activate
-
+RUN corepack enable
 USER node
-RUN pnpm install @directus/sdk@16.1.0
+
+RUN pnpm install @directus/sdk@18.0.3

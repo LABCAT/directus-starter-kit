@@ -13,6 +13,25 @@ services:
       POSTGRES_USER: "directus"
       POSTGRES_PASSWORD: "directus"
       POSTGRES_DB: "directus"
+    healthcheck:
+      test: ["CMD", "pg_isready", "--host=localhost", "--username=directus"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
+
+  cache:
+    image: redis:6
+    container_name: directus-cache
+    healthcheck:
+      test: ["CMD-SHELL", "[ $$(redis-cli ping) = 'PONG' ]"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
+
   directus:
     build:
       context: ./
@@ -26,6 +45,11 @@ services:
       - ./templates:/directus/templates
       - ./uploads:/directus/uploads
       - ./snapshot:/directus/snapshot
+    depends_on:
+      database:
+        condition: service_healthy
+      cache:
+        condition: service_healthy
     env_file:
       - .env
     environment:
